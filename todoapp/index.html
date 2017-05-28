@@ -18,7 +18,7 @@
             <h1>Todos</h1>
         </header>
         <ul class="items" />
-        <form method="POST" action="api/Tasks/AddTask">
+        <form method="POST">
             <div class="new">
                 <h1>New</h1>
                 <div class="new-item">
@@ -31,6 +31,47 @@
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
+    <script>
+        var template = (tpl, args) => tpl.replace(/\$\[(\w+)\]/g, (_, v) => args[v]);
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyBoV8u0WpTz-OpRm81lR9IPfwOiaLHo7pc",
+            authDomain: "todoapp-dd329.firebaseapp.com",
+            databaseURL: "https://todoapp-dd329.firebaseio.com",
+            projectId: "todoapp-dd329",
+            storageBucket: "todoapp-dd329.appspot.com",
+            messagingSenderId: "1009896047129"
+        };
+        firebase.initializeApp(config);
+        firebase.database.enableLogging(function (message) {
+            //console.log("[FIREBASE]", message);
+        });
+        var tasksRef = firebase.database().ref('/tasks');
+        tasksRef.on("value", function (snapshot) {
+            console.log(snapshot.val());
+            $('ul.items').empty();
+            $.each(snapshot.val(), function (key, item) {
+                console.log('[RRC]', key, item.description);
+                var liItem = `<li class="item pure-g">
+				            <div class="title pure-u-4-5">
+								<label><input type="checkbox" value="' + item.id + '" />
+                                    <span>$[desc]</span>
+                                </label>
+							</div>
+							<div class="pure-u-1-5" alt="Delete">x</div>
+			            </li>`;
+                var element = $(template(liItem, { desc: item.description }));
+                if (item.completed) {
+                    element.find(':checkbox').prop("checked", true);
+                }
+                element.appendTo($('ul.items'));
+            });
+        }, function (errorObject) {
+            console.log("The read failed: " + errorObject.code);
+        });
+    </script>
+    <!--
     <script>
         var baseUri = 'api/Tasks';
         var template = (tpl, args) => tpl.replace(/\$\[(\w+)\]/g, (_, v) => args[v]);
@@ -82,7 +123,7 @@
                     showTasks();
                 });
         }
-    </script>
+    </script>-->
 </body>
 
 </html>
