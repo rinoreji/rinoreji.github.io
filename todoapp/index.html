@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Todo App</title>
+    <!--<link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Open+Sans:400,300'>-->
+    <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">-->
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css">
+    <link rel="stylesheet" href="css/todoapp.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Todos</h1>
+        </header>
+        <ul class="items" />
+        <form method="POST" action="api/Tasks/AddTask">
+            <div class="new">
+                <h1>New</h1>
+                <div class="new-item">
+                    <input type="text" placeholder="Todo Title..">
+                    <!--<textarea placeholder="Todo Description.." maxlength="256"></textarea>-->
+                </div>
+                <button>Add</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        var baseUri = 'api/Tasks';
+        var template = (tpl, args) => tpl.replace(/\$\[(\w+)\]/g, (_, v) => args[v]);
+
+        $(document).ready(function () {
+            showTasks();
+        });
+
+        function showTasks() {
+            // Send an AJAX request
+            $.getJSON(baseUri + '/GetTasks')
+                .done(function (data) {
+                    // On success, 'data' contains a list of tasks.
+                    $('ul.items').empty();
+                    $.each(data, function (key, item) {
+                        console.log(item.Id, item.Completed);
+                        var liItem = `<li class="item pure-g">
+				            <div class="title pure-u-4-5">
+								<label><input type="checkbox" value="' + item.Id + '" />
+                                    <span>$[desc]</span>
+                                </label>
+							</div>
+							<div class="pure-u-1-5" alt="Delete">x</div>
+			            </li>`;
+                        var element = $(template(liItem, { desc: item.Description }));
+                        if (item.Completed) {
+                            element.find(':checkbox').prop("checked", true);
+                        }
+                        element.appendTo($('ul.items'));
+                    });
+                });
+        }
+
+        function addTask() {
+            var task = { Description: $('#taskTextBox').val(), Comments: $('#taskTextBox').val(), Completed: false };
+            console.log(task);
+            $.post(baseUri + '/AddTask', task).done(function (data) {
+                console.log(data);
+                showTasks();
+            });
+        }
+
+        function updateTaskStatus(id, status) {
+            console.log(id, status);
+            var task = { Id: id, Completed: status };
+            $.post(baseUri + '/UpdateTaskStatus', task)
+                .done(function (data) {
+                    console.log(data);
+                    showTasks();
+                });
+        }
+    </script>
+</body>
+
+</html>
