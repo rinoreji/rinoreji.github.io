@@ -13,11 +13,13 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="wrap">
         <header>
-            <h1>Todo App</h1>
+            <span>//TODO:</span>
         </header>
-        <ul class="items"></ul>
+        <div class="wrap-list">
+            <ul class="items list"></ul>
+        </div>
         <new-task>
             <input type="text" id="taskTextBox" placeholder=" Enter new task here">
             <button onclick="addTask()">Add</button>
@@ -57,7 +59,9 @@
                                     <span>$[desc]</span>
                                 </label>
 							</div>
-							<div class="pure-u-1-5" alt="Delete" onclick="removeTask('$[item_id]')">x</div>
+							<div class="pure-u-1-5 delete" alt="Delete" onclick="removeTask('$[item_id]')">
+                                <label>X</label>
+                            </div>
 			            </li>`;
                 var element = $(template(liItem, { desc: item.description, item_id: key }));
                 element.find(':checkbox').click(function () {
@@ -96,13 +100,16 @@
         }
 
         function removeTask(id) {
+            var confirmDelete = confirm('Confirm delete!');
             console.log('[delete]', id);
-            var task = {
-                deleted: true,
-                updated_on: new Date().toISOString()
-            };
-            var updateRef = tasksRef.child(id);
-            updateRef.update(task);
+            if (confirmDelete) {
+                var task = {
+                    deleted: true,
+                    updated_on: new Date().toISOString()
+                };
+                var updateRef = tasksRef.child(id);
+                updateRef.update(task);
+            }
         }
 
         function sortItems() {
