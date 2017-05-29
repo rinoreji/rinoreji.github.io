@@ -21,8 +21,9 @@
             <ul class="items list"></ul>
         </div>
         <new-task>
-            <input type="text" id="taskTextBox" placeholder=" Enter new task here">
-            <button onclick="addTask()">Add</button>
+            <input type="text" class="new-task-textbox" id="taskTextBox" placeholder="Enter new task here">
+            <input type="submit" id="submitbtn" value="Add" onclick="addTask()" />
+            <!--<button onclick="addTask()">Add</button>-->
         </new-task>
     </div>
 
@@ -44,15 +45,15 @@
         //     console.log("[FIREBASE]", message);
         // });
         var tasksRef = firebase.database().ref('/tasks');
-        tasksRef.orderByChild('deleted').equalTo(false).on("value", function (snapshot) {
+        tasksRef.orderByChild('deleted').equalTo(false).on("value", function(snapshot) {
             loadTasks(snapshot.val());
-        }, function (errorObject) {
+        }, function(errorObject) {
             console.error("The read failed: " + errorObject.code);
         });
 
         function loadTasks(items) {
             $('ul').empty();
-            $.each(items, function (key, item) {
+            $.each(items, function(key, item) {
                 var liItem = `<li class="item pure-g">
 				            <div class="title pure-u-4-5">
 								<label><input type="checkbox" value="$[item_id]"/>
@@ -63,8 +64,11 @@
                                 <label>X</label>
                             </div>
 			            </li>`;
-                var element = $(template(liItem, { desc: item.description, item_id: key }));
-                element.find(':checkbox').click(function () {
+                var element = $(template(liItem, {
+                    desc: item.description,
+                    item_id: key
+                }));
+                element.find(':checkbox').click(function() {
                     updateTaskStatus($(this).val(), $(this).prop('checked'));
                 });
                 if (item.completed) {
@@ -87,6 +91,7 @@
             var newTaskRef = tasksRef.push();
             newTaskRef.set(task);
             console.log('[add]', newTaskRef.key);
+            $('#taskTextBox').val("");
         }
 
         function updateTaskStatus(id, status) {
