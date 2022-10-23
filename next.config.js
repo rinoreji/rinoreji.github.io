@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const isGithubActions = process.env.GITHUB_ACTIONS || false
-console.log(isGithubActions , process.env.GITHUB_ACTIONS )
+
 let assetPrefix = ''
 let basePath = '/'
 
