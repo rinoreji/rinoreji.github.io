@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const isGithubActions = process.env.GITHUB_ACTIONS || false
-
+console.log(isGithubActions , process.env.GITHUB_ACTIONS )
 let assetPrefix = ''
 let basePath = '/'
 
@@ -16,8 +16,8 @@ if (isGithubActions) {
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  assetPrefix: assetPrefix,
-  basePath: basePath,
+  // assetPrefix: assetPrefix,
+  // basePath: basePath,
   images: {
     unoptimized: true,
   },
