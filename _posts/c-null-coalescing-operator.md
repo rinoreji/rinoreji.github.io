@@ -1,0 +1,25 @@
+---
+title: 'C# ?? "null coalescing operator"'
+excerpt: '?? in C# provides a nice, terse way to check whether a value is null, and if so return an alternate value.'
+coverImage: '/assets/blog/preview/cover.jpg'
+date: '2011-12-03T05:35:07.322Z'
+author:
+  name: Rino Reji Cheriyan
+  picture: '/assets/blog/authors/rrc.jpeg'
+ogImage:
+  url: '/assets/blog/preview/cover.jpg'
+---
+
+The null-coalescing operator `??` returns the value of its left-hand operand if it isn't null; otherwise, it evaluates the right-hand operand and returns its result. The `??` operator doesn't evaluate its right-hand operand if the left-hand operand evaluates to non-null.
+
+```c-sharp
+string message = "hello world";
+string result = message ?? "It was null";
+//result == "hello world";
+
+string message = null;
+string result = message ?? "It was null";
+//result == "It was null";
+```
+
+Thanks to  [Scott Guthrie](https://weblogs.asp.net/scottgu/the-new-c-null-coalescing-operator-and-using-it-with-linq)
