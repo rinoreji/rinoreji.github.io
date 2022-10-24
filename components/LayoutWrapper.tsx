@@ -1,7 +1,7 @@
 import siteMetadata from '@/data/siteMetadata'
 import headerNavLinks from '@/data/headerNavLinks'
 import Logo from '@/data/logo.svg'
-import Footer from './Footer'
+import AFooter from './AFooter'
 import Link from './Link'
 import SectionContainer from './SectionContainer'
 import MobileNav from './MobileNav'
@@ -50,7 +50,7 @@ const LayoutWrapper = ({ children }: Props) => {
           </div>
         </header>
         <main className="mb-auto">{children}</main>
-        <Footer />
+        <AFooter />
       </div>
     </SectionContainer>
   )
