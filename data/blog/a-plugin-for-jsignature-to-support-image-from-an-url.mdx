@@ -1,0 +1,51 @@
+---
+title: A plugin for jSignature to support image from an url
+date: '2022-10-25'
+tags: ['jSignature']
+draft: false
+summary: An import plugin for jSignature which can support signature data as urls and in turn make application csp scrict.
+images: []
+layout: PostLayout
+authors: ['default']
+---
+
+[**jSignature** Draw signature in the browser](https://willowsystems.github.io/jSignature)
+
+**jSignature** is a JavaScript widget (a jQuery plugin) that simplifies creation of a signature capture field in a browser window, allowing a user to draw a signature using mouse, pen, or finger. By default it supports data-url-formatted, base64 encoded (likely PNG) bitmap data. Due to this functionality we will need to enable `data:` for `img-src` in applications csp setting, which is not a great thing. In this post we will see how to develop an import plugin for jSignature which can support signature data as urls and in turn make csp scrict (`img-src 'self';`). This post will also help you to extent the inbuilt functionality of jSignature.
+
+```js:image-url-plugin.js
+$(function () {
+    var mothership = $.fn['jSignature']
+    mothership(
+        'addPlugin'
+        , 'import'
+        , 'image-url' // alias
+        , function (imgUrl, formattype, rerendercallable) {
+            var img = new Image()
+                // this = Canvas DOM elem. Not jQuery object. Not Canvas's parent div.
+                , c = this
+
+            img.onload = function () {
+                var ctx = c.getContext("2d").drawImage(
+                    img, 0, 0
+                    , (img.width < c.width) ? img.width : c.width
+                    , (img.height < c.height) ? img.height : c.height
+                )
+            }
+            img.src = imgUrl
+        }
+    )
+});
+```
+
+And now we can use the plugins functionality by specifying the alias on `importData`
+
+```js
+let signData = 'https://example.com/getsignature?id=1'
+$('#signatureElementId').jSignature('importData', signData, 'image-url')
+```
+
+References:
+
+- [jSignature home page](https://willowsystems.github.io/jSignature/#/about/)
+- [Plugin samples](https://github.com/willowsystems/jSignature/tree/master/src/plugins)
