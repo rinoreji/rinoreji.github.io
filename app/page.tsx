@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Product } from "./types";
 
 export default async function Home() {
 
@@ -23,7 +24,7 @@ export default async function Home() {
         />
         <ul className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           {
-            data.products.map((item:any,index:any) => 
+            data.products.map((item:Product,index:number) => 
               <li className="mb-2" key={index}>
                 {item.title}
               </li>
